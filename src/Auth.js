@@ -53,7 +53,8 @@ var getAuthForSessionToken = function({ config, sessionToken, installationId } =
     include: 'user'
   };
 
-  if(config.legacySessionTokens) {
+//  if(config.legacySessionTokens) {
+  function attemptLegacySessionTokens() {
     var query = new RestQuery(config, master(config), '_User', { sessionToken }, restOptions);
     return query.execute().then((response) => {
       var results = response.results;
@@ -69,12 +70,15 @@ var getAuthForSessionToken = function({ config, sessionToken, installationId } =
       cache.users.set(sessionToken, userObject);
       return new Auth({ config, isMaster: false, installationId, user: userObject });
     });
-  } else {
+//  } else {
+  }
+
     var query = new RestQuery(config, master(config), '_Session', { sessionToken }, restOptions);
     return query.execute().then((response) => {
       var results = response.results;
       if (results.length !== 1 || !results[0]['user']) {
-        return nobody(config);
+//        return nobody(config);
+	return attemptLegaySessionTokens()
       }
 
       var now = new Date(),
@@ -91,7 +95,6 @@ var getAuthForSessionToken = function({ config, sessionToken, installationId } =
       cache.users.set(sessionToken, userObject);
       return new Auth({ config, isMaster: false, installationId, user: userObject });
     });
-  }
 };
 
 // Returns a promise that resolves to an array of role names
