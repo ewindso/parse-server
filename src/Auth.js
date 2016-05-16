@@ -78,7 +78,7 @@ var getAuthForSessionToken = function({ config, sessionToken, installationId } =
       var results = response.results;
       if (results.length !== 1 || !results[0]['user']) {
 //        return nobody(config);
-	return attemptLegaySessionTokens()
+	return attemptLegacySessionTokens()
       }
 
       var now = new Date(),
